@@ -1,0 +1,5 @@
+= MongoMetrics
+
+rails plugin new mongo_metrics --mountable
+
+mongod run --rest --config /usr/local/etc/mongod.conf
