@@ -8,6 +8,17 @@ module MongoMetrics
   EVENT = "process_action.action_controller"
 
   ActiveSupport::Notifications.subscribe EVENT do |*args|
-    MongoMetrics::Metric.store!(args)
+    MongoMetrics::Metric.store!(args) unless mute?
+  end
+
+  def self.mute!
+    Thread.current["mongo_metrics.mute"] = true
+    yield
+  ensure
+    Thread.current["mongo_metrics.mute"] = false
+  end
+
+  def self.mute?
+    Thread.current["mongo_metrics.mute"] || false
   end
 end

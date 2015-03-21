@@ -9,8 +9,8 @@ class NavigationTest < ActionDispatch::IntegrationTest
     get main_app.home_bar_path
     get main_app.home_baz_path
 
-    get "/mongo_metrics"
-    # get mongo_metrics.metrics_path
+    get "/mongo_metrics/metrics"
+    # get mongo_metrics.root_path
     assert_match "Path: /home/foo", response.body
     assert_match "Path: /home/bar", response.body
     assert_match "Path: /home/baz", response.body
@@ -22,6 +22,12 @@ class NavigationTest < ActionDispatch::IntegrationTest
     # delete metric_path(metric)
     delete "/mongo_metrics/metrics/#{metric.id}"
     assert_empty MongoMetrics::Metric.where(id: metric.id)
+  end
+
+  test "does not log engine actions" do
+    get "/mongo_metrics/metrics"
+    get "/mongo_metrics"
+    assert_equal 0, MongoMetrics::Metric.count
   end
 end
 

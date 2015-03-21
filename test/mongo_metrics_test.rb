@@ -20,4 +20,26 @@ class MongoMetricsTest < ActiveSupport::TestCase
     assert metric.started_at
     assert metric.created_at
   end
+
+  test "can ignore notifications when specified" do
+    MongoMetrics.mute! do
+      assert MongoMetrics.mute?
+      event = "process_action.action_controller"
+      ActiveSupport::Notifications.instrument event do
+        sleep(0.001)
+      end
+    end
+
+    assert !MongoMetrics.mute?
+    assert_equal 0, MongoMetrics::Metric.count
+  end
+
+  test "does not leak mute state on failure" do
+    MongoMetrics.mute! do
+      assert MongoMetrics.mute?
+      raise "oops"
+    end rescue nil
+
+    assert !MongoMetrics.mute?
+  end
 end
