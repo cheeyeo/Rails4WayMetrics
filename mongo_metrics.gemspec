@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency "mongoid", "~> 4.0.2"
   s.add_development_dependency "jquery-rails", "~> 3.0.1"
+  s.add_development_dependency "puma"
 end

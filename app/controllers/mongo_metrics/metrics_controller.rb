@@ -3,6 +3,11 @@ module MongoMetrics
 
     def index
       @metrics = Metric.all
+      respond_to do |format|
+        format.html
+        format.json
+        format.csv{ render csv: @metrics }
+      end
     end
 
     def destroy
